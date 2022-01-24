@@ -1,0 +1,16 @@
+[package]
+name = "ore-encoding-rs"
+version = "0.1.0"
+authors = ["James Sadler <james@cipherstash.com>"]
+edition = "2018"
+homepage = "http://ore-encoding.rs"
+description = "Plaintext encoding to prepare terms for encryption by ore.rs"
+license-file = "COPYING"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dev-dependencies]
+criterion = "0.3.5"
+quickcheck = "1.0.3"
+
+[dependencies]
+
