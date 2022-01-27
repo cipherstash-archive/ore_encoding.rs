@@ -1,6 +1,6 @@
 # ore_encoding.rs
 
-[![Test](https://github.com/cipherstash/ore_encding.rs/actions/workflows/test.yml/badge.svg)](https://github.com/cipherstash/ore_encoding.rs/actions/workflows/test.yml)
+[![Test](https://github.com/cipherstash/ore_encoding.rs/actions/workflows/test.yml/badge.svg)](https://github.com/cipherstash/ore_encoding.rs/actions/workflows/test.yml)
 
 This is a companion package to [ore.rs](https://github.com/cipherstash/ore.rs) that can generate and manipulate `u64` plaintexts before they are encrypted by `ore.rs`. Being able to manipulate the intermediate representation of a term is critical for implementing range queries.
 
