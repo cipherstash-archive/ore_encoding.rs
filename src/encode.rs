@@ -25,6 +25,12 @@
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub struct OrderedInteger(u64);
 
+impl From<f32> for OrderedInteger {
+    fn from(term: f32) -> OrderedInteger {
+        OrderedInteger::from(f64::from(term))
+    }
+}
+
 impl From<f64> for OrderedInteger {
     fn from(term: f64) -> OrderedInteger {
         use core::mem;
