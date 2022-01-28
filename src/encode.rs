@@ -1,29 +1,38 @@
-/*
-  This module implements an order-preserving translation of 64 bit
-  floats to 64 bit doubles (and the reverse operation - although that is just
-  used for verifying correctness).
+//! This module implements an order-preserving translation of `f32`, `f64`, `u64`,
+//! `u32`, `u16`, `u8` to `u64`.
+//!
+//! The order-preserving nature is only applicable when the source term is `f32`
+//! or `f64`.
+//!
+//! The `u64` that is produced is a plaintext that will be ORE encrypted later
+//! on.
+//!
+//! The mapping is such that the ordering of the floats will be preserved when
+//! mapped to an unsigned integer, for example, an array of unsigned integers
+//! dervived from a sorted array of doubles will result in no change to its
+//! ordering when it itself is sorted.
+//!
+//! The mapping does not preserve any notion of the previous value after the
+//! conversion - only ordering is preserved.
+//!
+//! Caveat: NaN and -ve & +ve infinity & -0.0 will also be mapped and ordering
+//! is not well-defined with those values. Those values should be discarded
+//! before converting arrays of those values.
+//!
+//! This post was used as a reference for building this implementation:
+//! https://lemire.me/blog/2020/12/14/converting-floating-point-numbers-to-integers-while-preserving-order
+//!
+//! # Example
+//!
+//! ```
+//! use ore_encoding_rs::OrderedInteger;
+//!
+//! let OrderedInteger(encoded) = OrderedInteger::from(123.456f64);
+//! ```
 
-  The 64 bit integer that is produced is a plaintext that will be ORE encrypted
-  later on.
-
-  The mapping is such that the ordering of the floats will be preserved when
-  mapped to an unsigned integer, for example, an array of unsigned integers
-  dervived from a sorted array of doubles will result in no change to its
-  ordering when it itself is sorted.
-
-  The mapping does not preserve any notion of the previous value after the
-  conversion - only ordering is preserved.
-
-  Caveat: NaN and -ve & +ve infinity will also be mapped and ordering is not
-  well-defined with those values. Those values should be discarded before
-  converting arrays of those values.
-
-  This post was used as a reference for building this implementation:
-  https://lemire.me/blog/2020/12/14/converting-floating-point-numbers-to-integers-while-preserving-order
-*/
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
-pub struct OrderedInteger(u64);
+pub struct OrderedInteger(pub u64);
 
 impl From<f32> for OrderedInteger {
     fn from(term: f32) -> OrderedInteger {
@@ -33,10 +42,10 @@ impl From<f32> for OrderedInteger {
 
 impl From<f64> for OrderedInteger {
     fn from(term: f64) -> OrderedInteger {
-        use core::mem;
+        use core::mem::transmute;
         let num: u64 = term.to_bits();
-        let signed: i64 = -(unsafe { mem::transmute(num >> 63) });
-        let mut mask: u64 = unsafe { mem::transmute(signed) };
+        let signed: i64 = -(unsafe { transmute(num >> 63) });
+        let mut mask: u64 = unsafe { transmute(signed) };
         mask |= 0x8000000000000000;
         OrderedInteger(num ^ mask)
     }

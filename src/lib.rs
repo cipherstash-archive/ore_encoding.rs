@@ -1,4 +1,6 @@
-pub mod encode;
+mod encode;
+
+pub use encode::*;
 
 #[cfg(test)]
 #[macro_use]
