@@ -4,7 +4,7 @@
 
 This is a companion package to [ore.rs](https://github.com/cipherstash/ore.rs) that can generate and manipulate `u64` plaintexts before they are encrypted by `ore.rs`. Being able to manipulate the intermediate representation of a term is critical for implementing range queries.
 
-Currently a `u64` plaintext can be generated from `f64`, `u64` (no-op), `u32`, `u16`, `byte` and `bool`.
+Currently a `u64` plaintext can be generated from `f64`, `u64` (no-op), `u32`, `u16`, `u8` and `bool`.
 
 ## TODO
 
