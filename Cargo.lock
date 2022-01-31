@@ -319,6 +319,7 @@ version = "0.1.0"
 dependencies = [
  "criterion",
  "quickcheck",
+ "siphasher",
 ]
 
 [[package]]
@@ -517,6 +518,12 @@ dependencies = [
  "ryu",
  "serde",
 ]
+
+[[package]]
+name = "siphasher"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a86232ab60fa71287d7f2ddae4a7073f6b7aac33631c3015abb556f08c6d0a3e"
 
 [[package]]
 name = "syn"
