@@ -28,9 +28,12 @@
 //!
 //! let OrePlaintext(encoded) = OrePlaintext::from(123.456f64);
 //! ```
+
 mod encode;
+mod siphash;
 
 pub use encode::*;
+pub use siphash::*;
 
 #[cfg(test)]
 #[macro_use]
