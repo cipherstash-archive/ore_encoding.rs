@@ -1,7 +1,18 @@
+use std::{ops::{Sub, Add}};
+
+use num::{Bounded, One};
+
+/// Convenience alias for all of the traits that must be implemented by the type
+/// held by an [OrePlaintext]
+pub trait OrePlaintextOps: Ord + Bounded + One + Copy + Sub<Output=Self> + Add<Output=Self> {}
+
+/// Blanket implementation of `OrePlaintextOps`
+impl<T: Ord + Sized + Bounded + One + Copy + Sub<Output=T> + Add<Output=T>> OrePlaintextOps for T {}
+
 /// An `OrePlainText` is a wrapper around an unsigned integer which represents a
 /// plaintext value before it is encrypted with an ORE encryption scheme.
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
-pub struct OrePlaintext<T>(pub T) where T: Ord + Sized;
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Copy, Clone)]
+pub struct OrePlaintext<T>(pub T) where T: OrePlaintextOps;
 
 impl From<f32> for OrePlaintext<u64> {
     fn from(term: f32) -> OrePlaintext<u64> {
