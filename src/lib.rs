@@ -31,8 +31,10 @@
 
 mod encode;
 mod siphash;
+mod ranges;
 
 pub use encode::*;
+pub use ranges::*;
 pub use siphash::*;
 
 #[cfg(test)]
