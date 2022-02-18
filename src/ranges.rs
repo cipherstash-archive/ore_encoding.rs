@@ -34,7 +34,7 @@ pub fn encode_gt<T>(value: OrePlaintext<T>) -> OreRange<T> where T: OrePlaintext
 }
 
 pub fn encode_gte<T>(value: OrePlaintext<T>) -> OreRange<T> where T: OrePlaintextOps {
-    OreRange{ min: value, max: OrePlaintext(T::min_value()) }
+    OreRange{ min: value, max: OrePlaintext(T::max_value()) }
 }
 
 pub fn encode_eq<T>(value: OrePlaintext<T>) -> OreRange<T> where T: OrePlaintextOps {
