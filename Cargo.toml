@@ -1,9 +1,9 @@
 [package]
 name = "ore-encoding-rs"
-version = "0.23.0"
+version = "0.23.1"
 authors = ["James Sadler <james@cipherstash.com>"]
 edition = "2018"
-homepage = "http://ore-encoding.rs"
+homepage = "https://github.com/cipherstash/ore_encoding.rs"
 description = "Plaintext encoding to prepare terms for encryption by ore.rs"
 license-file = "COPYING"
 
