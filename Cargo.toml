@@ -1,6 +1,6 @@
 [package]
 name = "ore-encoding-rs"
-version = "0.23.1"
+version = "0.23.2"
 authors = ["James Sadler <james@cipherstash.com>"]
 edition = "2018"
 homepage = "https://github.com/cipherstash/ore_encoding.rs"
