@@ -31,6 +31,16 @@ impl From<f64> for OrePlaintext<u64> {
     }
 }
 
+/// This is useful for debugging purposes only
+impl From<OrePlaintext<u64>> for f64 {
+    fn from(plaintext: OrePlaintext<u64>) -> f64 {
+        let OrePlaintext(term) = plaintext;
+        let i = (((term >> 63) as i64) - 1) as u64;
+        let mask: u64 = i | 0x8000000000000000;
+        f64::from_bits(term ^ mask)
+    }
+}
+
 impl From<bool> for OrePlaintext<u64> {
     fn from(term: bool) -> OrePlaintext<u64> {
         OrePlaintext(term.into())
@@ -69,13 +79,6 @@ mod tests {
     use super::*;
     use quickcheck::TestResult;
 
-    fn decode_u64_to_f64(ordered_integer: OrePlaintext<u64>) -> f64 {
-        let OrePlaintext(term) = ordered_integer;
-        let i = (((term >> 63) as i64) - 1) as u64;
-        let mask: u64 = i | 0x8000000000000000;
-        f64::from_bits(term ^ mask)
-    }
-
     #[test]
     // -0.0 and 0.0 compare as equal in f64's PartialOrd implementation.  This
     // test demonstrates that fact and why we need to filter out -0.0 from the
@@ -89,7 +92,7 @@ mod tests {
     quickcheck! {
         fn roundtrip_one_f64(x: f64) -> TestResult {
             if !x.is_nan() && x.is_finite() {
-                TestResult::from_bool(x == decode_u64_to_f64(x.into()))
+                TestResult::from_bool(x == f64::from(OrePlaintext::<u64>::from(x)))
             } else {
                 TestResult::discard()
             }
