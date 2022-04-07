@@ -15,6 +15,7 @@ quickcheck = "1.0.3"
 [dependencies]
 siphasher = "0.3.9"
 num = "0.4.0"
+unicode-normalization = "0.1.19"
 
 [[bench]]
 name = "f64-to-u64-encoding"
