@@ -22,8 +22,13 @@ impl From<f32> for OrePlaintext<u64> {
 
 impl From<f64> for OrePlaintext<u64> {
     fn from(term: f64) -> OrePlaintext<u64> {
+        let mut value = term;
+
+        if value == -0.0f64 {
+            value = 0.0f64;
+        }
         use core::mem::transmute;
-        let num: u64 = term.to_bits();
+        let num: u64 = value.to_bits();
         let signed: i64 = -(unsafe { transmute(num >> 63) });
         let mut mask: u64 = unsafe { transmute(signed) };
         mask |= 0x8000000000000000;
@@ -89,9 +94,56 @@ mod tests {
         assert_eq!(0.0f64.partial_cmp(&-0.0f64), Some(Ordering::Equal))
     }
 
+    #[test]
+    fn test_subnormal_sorts_correctly() -> () {
+        let subnormal = f64::MIN_POSITIVE / 1000.0f64;
+        let subnormal_pt = OrePlaintext::<u64>::from(subnormal);
+        let zero_pt = OrePlaintext::<u64>::from(0.0f64);
+        let min_pt  = OrePlaintext::<u64>::from(f64::MIN_POSITIVE);
+
+        assert_eq!(zero_pt.0.cmp(&min_pt.0), Ordering::Less);
+        assert_eq!(zero_pt.0.cmp(&subnormal_pt.0), Ordering::Less);
+        assert_eq!(subnormal_pt.0.cmp(&min_pt.0), Ordering::Less)
+    }
+
+    #[test]
+    fn test_infinity_sorts_correctly() -> () {
+        let min_pt = OrePlaintext::<u64>::from(f64::MIN);
+        let max_pt = OrePlaintext::<u64>::from(f64::MAX);
+        let zero_pt = OrePlaintext::<u64>::from(0.0f64);
+        let inf_pt = OrePlaintext::<u64>::from(f64::INFINITY);
+        let ninf_pt = OrePlaintext::<u64>::from(f64::NEG_INFINITY);
+
+        assert_eq!(ninf_pt.0.cmp(&min_pt.0), Ordering::Less);
+        assert_eq!(ninf_pt.0.cmp(&max_pt.0), Ordering::Less);
+        assert_eq!(ninf_pt.0.cmp(&zero_pt.0), Ordering::Less);
+        assert_eq!(ninf_pt.0.cmp(&inf_pt.0), Ordering::Less);
+
+        assert_eq!(inf_pt.0.cmp(&min_pt.0), Ordering::Greater);
+        assert_eq!(inf_pt.0.cmp(&max_pt.0), Ordering::Greater);
+        assert_eq!(inf_pt.0.cmp(&zero_pt.0), Ordering::Greater);
+        assert_eq!(inf_pt.0.cmp(&ninf_pt.0), Ordering::Greater);
+    }
+
+    #[test]
+    fn test_negatives_compare_correctly() -> () {
+        let big_pt = OrePlaintext::<u64>::from(-10000f64);
+        let sml_pt = OrePlaintext::<u64>::from(-0.001f64);
+
+        assert_eq!(big_pt.0.cmp(&sml_pt.0), Ordering::Less);
+    }
+
+    #[test]
+    fn test_zeroes_compare_correctly() -> () {
+        let neg_pt = OrePlaintext::<u64>::from(-0.0f64);
+        let pos_pt = OrePlaintext::<u64>::from(0.0f64);
+
+        assert_eq!(neg_pt.0.cmp(&pos_pt.0), Ordering::Equal);
+    }
+
     quickcheck! {
         fn roundtrip_one_f64(x: f64) -> TestResult {
-            if !x.is_nan() && x.is_finite() {
+            if !x.is_nan() && x != -0.0 {
                 TestResult::from_bool(x == f64::from(OrePlaintext::<u64>::from(x)))
             } else {
                 TestResult::discard()
