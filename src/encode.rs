@@ -1,4 +1,6 @@
 use std::{ops::{Sub, Add}};
+use unicode_normalization::UnicodeNormalization;
+use crate::siphash::siphash;
 
 use num::{Bounded, One};
 
@@ -76,6 +78,11 @@ impl From<u64> for OrePlaintext<u64> {
     }
 }
 
+impl From<String> for OrePlaintext<u64> {
+    fn from(term: String) -> OrePlaintext<u64> {
+        OrePlaintext(siphash(term.nfc().collect::<String>().as_bytes()))
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -145,6 +152,11 @@ mod tests {
     fn test_encode_bool() -> () {
         assert_eq!(OrePlaintext::<u64>::from(true).0, 1);
         assert_eq!(OrePlaintext::<u64>::from(false).0, 0);
+    }
+
+    #[test]
+    fn test_strings_hash_correctly() -> () {
+        assert_eq!(OrePlaintext::<u64>::from(format!("Hello world!")).0, 16562844544668089185);
     }
 
     quickcheck! {
