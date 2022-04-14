@@ -141,6 +141,12 @@ mod tests {
         assert_eq!(neg_pt.0.cmp(&pos_pt.0), Ordering::Equal);
     }
 
+    #[test]
+    fn test_encode_bool() -> () {
+        assert_eq!(OrePlaintext::<u64>::from(true).0, 1);
+        assert_eq!(OrePlaintext::<u64>::from(false).0, 0);
+    }
+
     quickcheck! {
         fn roundtrip_one_f64(x: f64) -> TestResult {
             if !x.is_nan() && x != -0.0 {
