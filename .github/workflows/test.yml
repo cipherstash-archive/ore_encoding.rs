@@ -66,4 +66,4 @@ jobs:
 
       - name: "Benchmark"
         run: |
-          cargo bench
+          cargo bench --features bench

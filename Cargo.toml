@@ -24,3 +24,9 @@ harness = false
 [[bench]]
 name = "siphash"
 harness = false
+
+# We use this feature for producing a benchmark build that exposes some
+# internal functions - otherwise we cannot compile the benchmark due to the
+# internal functions not being exported.
+[features]
+bench = []
