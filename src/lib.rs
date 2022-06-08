@@ -30,11 +30,14 @@
 //! ```
 
 mod encode;
-mod siphash;
 mod ranges;
+mod siphash;
 
 pub use encode::*;
 pub use ranges::*;
+
+#[cfg(feature = "bench")]
+pub use siphash::*;
 
 #[cfg(test)]
 #[macro_use]
